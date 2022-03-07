@@ -1,1 +1,3 @@
-# DatabasesAdvanced
+# bitcoin web scarping
+
+Once you run the program it will automatically scrape all the information for you. Every minute it will scrape the top 10 highest transactions and it will print it out in USD. Every minute the list will get updated. Every 5 minutes it will show you a list of the 10 highest transactions with their time of transaction, hash, transaction in bitcoin and in USD. The program will only stop if you manually stop if from running.
