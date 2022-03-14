@@ -1,8 +1,15 @@
 import requests, time, re
 from bs4 import BeautifulSoup
+import pymongo as mongo
+
+client = mongo.MongoClient("mongodb ://127.0.0.1:27017")
+
+bitcoins_db = client["bitcoins"]
+col_topten = bitcoins_db["bitcoins_topten"]
 
 result = list()
 # keep going until manually stopped
+
 while True:
     minutes = 0
     # print every 5 minutes
@@ -53,6 +60,8 @@ while True:
         minutes +=1
         print("TOP 10 TRANSACTIONS:")
         for idx in range(0,len(result)):
+            bitcoin = {"time": result[idx][1], "hash": result[idx][3], "usd": result[idx][0], "btc": result[idx][2]}
+            x = col_topten.insert_one(bitcoin)
             print(str(idx+1) + ": $" + str(result[idx][0]))
 
         # wait a minute
@@ -61,5 +70,6 @@ while True:
     # print a top 10 result after 5 minutes
     print("RESULT AFTER 5 MIN:")
     for idx in range(0,len(result)):
-        print("Time: " + result[idx][1], "Hash: " + result[idx][3], "USD: $" + str(result[idx][0]), "BTC: " + result[idx][2])
+        print("Time: " + bitcoin["time"], "Hash: " + bitcoin["hash"], "USD: $" + str(bitcoin["usd"]), "BTC: " +  bitcoin["btc"])
+
 
