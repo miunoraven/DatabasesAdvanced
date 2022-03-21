@@ -1,8 +1,6 @@
-import requests, time, re
+import requests, time, re, redis
 from bs4 import BeautifulSoup
 
-
-result = list()
 
 while True:
     minutes = 0
@@ -30,28 +28,17 @@ while True:
                 transaction.append(price)
 
         transactions = sorted(transactions, reverse=True)[:10]
-
         
-        # if len(result) == 0:
-        #     for i in range(0,10):
-        #         result.append(transactions[i])
-
-        # else:
-        #     result += transactions[:10]
-        #     result = sorted(result, reverse=True)[:10]
-        
-    
         minutes +=1
-        print("TOP 10 TRANSACTIONS:")
-        for idx in range(0,len(result)):
-            bitcoin = {"time": result[idx][1], "hash": result[idx][3], "usd": result[idx][0], "btc": result[idx][2]}
-            x = col_topten.insert_one(bitcoin)
-            print(str(idx+1) + ": $" + str(result[idx][0]))
 
-
+        r = redis.Redis(host='localhost', port=6379, db=0)
+        
+        for items in transactions:
+            bitcoin = { "hash": items[3], 
+                        "time": items[1], 
+                        "usd": items[0], 
+                        "btc": items[2]
+                        }
+            r.hset(items[3], mapping=bitcoin)
+        
         time.sleep(60)
-
-    
-    print("RESULT AFTER 5 MIN:")
-    for idx in range(0,len(result)):
-        print("Time: " + bitcoin["time"], "Hash: " + bitcoin["hash"], "USD: $" + str(bitcoin["usd"]), "BTC: " +  bitcoin["btc"])
