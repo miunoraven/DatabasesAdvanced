@@ -4,7 +4,7 @@ import pymongo as mongo
 while True:
     r = redis.Redis(host='localhost', port=6379, db=0)
 
-    client = mongo.MongoClient("mongodb://127.0.0.1:27017")
+    client = mongo.MongoClient("mongodb://localhost:27017")
 
     bitcoins_db = client["bitcoins"]
     topten = bitcoins_db["bitcoins_topten"]
